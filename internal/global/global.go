@@ -1,7 +1,7 @@
 package global
 
 import (
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 )
 

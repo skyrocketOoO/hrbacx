@@ -7,47 +7,47 @@ const headers = {
 }
 
 export function AddLeader(leaderID, roleID){
-    let response = http.post(`${BASE_URL}/addLeader`, JSON.stringify({
-        leaderID: leaderID,
-        roleID: roleID
+    let res = http.post(`${BASE_URL}/addLeader`, JSON.stringify({
+        leaderID: leaderID.toString(),
+        roleID: roleID.toString()
     }), {
         headers: headers,
     });
     check(res, { 'AddLeader': (r) => r.status == 200 });
-    return response;
+    return res;
 }
 
 export function AssignPermission(objectID, permissionType, roleID){
-    let response = http.post(`${BASE_URL}/assignPermission`, JSON.stringify({
-        objectID: objectID,
+    let res = http.post(`${BASE_URL}/assignPermission`, JSON.stringify({
+        objectID: objectID.toString(),
         permissionType: permissionType,
-        roleID: roleID
+        roleID: roleID.toString()
     }), {
         headers: headers,
     });
     check(res, { 'AssignPermission': (r) => r.status == 200 });
-    return response;
+    return res;
 }
 
 export function AssignRole(userID, roleID){
-    let response = http.post(`${BASE_URL}/assignRole`, JSON.stringify({
-        userID: userID,
-        roleID: roleID
+    let res = http.post(`${BASE_URL}/assignRole`, JSON.stringify({
+        userID: userID.toString(),
+        roleID: roleID.toString()
     }), {
         headers: headers,
     });
     check(res, { 'AssignRole': (r) => r.status == 200 });
-    return response;
+    return res;
 }
 
 export function CheckPermission(userID, permissionType, objectID){
-    let response = http.post(`${BASE_URL}/checkPermission`, JSON.stringify({
-        userID: userID,
+    let res = http.post(`${BASE_URL}/checkPermission`, JSON.stringify({
+        userID: userID.toString(),
         permissionType: permissionType,
-        objectID: objectID
+        objectID: objectID.toString()
     }), {
         headers: headers,
     });
     check(res, { 'CheckPermission': (r) => r.status == 200 });
-    return response;
+    return res;
 }

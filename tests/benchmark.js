@@ -1,4 +1,4 @@
-import { check, sleep } from 'k6';
+import { sleep } from 'k6';
 import { AddLeader, AssignPermission, AssignRole, CheckPermission } from './client.js';
 
 export const options = {
@@ -10,16 +10,12 @@ const ROLE_LAYER = 3;
 const OBJECT_CHILDREN = 10;
 const PERMISSION_TYPE = "write";
 
-// const USERS = 10000;
-// const ROLES = 500;
-// const OBJECTS = 500000;
-
 const sourceUser =  0;
 
 export function setup() {
   console.log('Setting up the test...');
 
-  AssignRole(0, 0);
+  AssignRole(sourceUser, 0);
 
   let cur = 0;
   for (let l = 0; l < ROLE_LAYER; l++){
