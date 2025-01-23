@@ -101,8 +101,6 @@ github.com/sagikazarmark/slog-shim v0.1.0 h1:diDBnUNK9N/354PgrxMywXnAwEr1QZcOr6g
 github.com/sagikazarmark/slog-shim v0.1.0/go.mod h1:SrcSrq8aKtyuqEI1uvTDTK1arOWRIczQRv+GVI1AkeQ=
 github.com/skyrocketOoO/erx v0.3.1 h1:p+2+deTn/0sMXUUzpnvEzJzJuF3ZnUD4GVgKBQZMXfM=
 github.com/skyrocketOoO/erx v0.3.1/go.mod h1:ebjF3Rs+Hhd4HmPbYeOMeLkN6OfkX15wN4/5j6Srh4w=
-github.com/skyrocketOoO/gox v1.1.1 h1:ldw/Q6UnHs2DkOqPbORjvHtC8FFXT3NX37mtColPv/g=
-github.com/skyrocketOoO/gox v1.1.1/go.mod h1:xj8h9jiME9xzHYnKW5NY+EoC8HAtCD1TzqE6MYj8NJQ=
 github.com/sourcegraph/conc v0.3.0 h1:OQTbbt6P72L20UqAkXXuLOj79LfEanQ+YQFNpLA9ySo=
 github.com/sourcegraph/conc v0.3.0/go.mod h1:Sdozi7LEKbFPqYX2/J+iBAM6HpqSLTASQIKqDmF7Mt0=
 github.com/spf13/afero v1.12.0 h1:UcOPyRBYczmFn6yvphxkn9ZEOY65cpwGKb5mL36mrqs=
