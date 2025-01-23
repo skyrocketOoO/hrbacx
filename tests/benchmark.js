@@ -1,12 +1,13 @@
 import { sleep } from 'k6';
-import { AddLeader, AssignPermission, AssignRole, CheckPermission } from './client.js';
+import { AddLeader, AssignPermission, AssignRole, CheckPermission, ClearAll } from './client.js';
 
 export const options = {
   vus: 1,
+  setupTimeout: '600s',
 }
 
-const ROLE_CHILDREN = 2;
-const ROLE_LAYER = 3;
+const ROLE_CHILDREN = 5;
+const ROLE_LAYER = 6;
 const OBJECT_CHILDREN = 10;
 const PERMISSION_TYPE = "write";
 
@@ -39,7 +40,7 @@ export function setup() {
   const targetObject = lastRole * OBJECT_CHILDREN;
   // console.log(cur-1);
 
-  sleep(10);
+  sleep(5);
   return { targetObject };
 }
 
@@ -51,4 +52,5 @@ export default function (data) {
 }
 
 export function teardown(data) {
+  // ClearAll();
 }

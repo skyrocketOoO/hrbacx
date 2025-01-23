@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 	"github.com/skyrocketOoO/hrbacx/internal/common"
 )
 
@@ -10,6 +11,7 @@ type Usecase interface {
 	AssignPermission(objectID, permissionType, roleID string) error
 	AssignRole(userID, roleID string) error
 	CheckPermission(userID, permissionType, objectID string) (ok bool, err error)
+	ClearAll() error
 }
 
 type Handler struct {
@@ -96,6 +98,15 @@ func (h *Handler) CheckPermission(c *gin.Context) {
 	}
 	if !ok {
 		c.Status(400)
+		return
+	}
+	c.Status(200)
+}
+
+func (h *Handler) ClearAll(c *gin.Context) {
+	if err := h.Usecase.ClearAll(); err != nil {
+		log.Error().Msg(err.Error())
+		c.Status(500)
 		return
 	}
 	c.Status(200)

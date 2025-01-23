@@ -10,4 +10,5 @@ func Bind(r *gin.Engine, h *controller.Handler) {
 	r.POST("/assignPermission", h.AssignPermission)
 	r.POST("/assignRole", h.AssignRole)
 	r.POST("/checkPermission", h.CheckPermission)
+	r.POST("/clearAll", h.ClearAll)
 }

@@ -1,7 +1,8 @@
 package usecase
 
 import (
-	"github.com/skyrocketOoO/gox/Collection/queue"
+	"fmt"
+
 	"github.com/skyrocketOoO/hrbacx/internal/global"
 	"github.com/skyrocketOoO/hrbacx/internal/model"
 	"gorm.io/gorm"
@@ -39,33 +40,18 @@ func (u *PgUsecase) AssignRole(userID, roleID string) error {
 	}).Error
 }
 
-func (u *PgUsecase) CheckPermission(userID, permissionType, objectID string) (ok bool, err error) {
-	q := queue.NewQueue[string]()
-	q.Push("user_" + userID)
-
-	for !q.IsEmpty() {
-		n := q.Len()
-		for i := 0; i < n; i++ {
-			v, _ := q.Pop()
-			edges := []model.Edge{}
-			if err := u.db.Debug().Where(`from_v = ?`, v).Find(&edges).Error; err != nil {
-				return false, err
-			}
-
-			for _, edge := range edges {
-				switch edge.Relation {
-				case global.BelongsTo:
-					q.Push(edge.ToV)
-				case global.LearderOf:
-					q.Push(edge.ToV)
-				case permissionType:
-					if edge.ToV == "obj_"+objectID {
-						return true, nil
-					}
-				}
-			}
-		}
+func (u *PgUsecase) CheckPermission(userID, permissionType, objectID string) (
+	ok bool, err error,
+) {
+	fmt.Println("CheckPermission", userID, permissionType, objectID)
+	var result bool
+	query := `SELECT check_permission($1, $2, $3)`
+	if err := u.db.Raw(query, userID, permissionType, objectID).Scan(&result).Error; err != nil {
+		return false, err
 	}
+	return result, nil
+}
 
-	return false, nil
+func (u *PgUsecase) ClearAll() error {
+	return u.db.Unscoped().Where("1=1").Delete(&model.Edge{}).Error
 }

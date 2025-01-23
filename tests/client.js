@@ -51,3 +51,11 @@ export function CheckPermission(userID, permissionType, objectID){
     check(res, { 'CheckPermission': (r) => r.status == 200 });
     return res;
 }
+
+export function ClearAll(){
+    let res = http.post(`${BASE_URL}/clearAll`, JSON.stringify({}), {
+        headers: headers,
+    });
+    check(res, { 'ClearAll': (r) => r.status == 200 });
+    return res;
+}
