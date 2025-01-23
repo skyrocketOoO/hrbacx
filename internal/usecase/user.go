@@ -31,8 +31,39 @@ func (u *Usecase) AssignRole(userID, roleID string) error {
 
 func (u *Usecase) CheckPermission(userID, permissionType, objectID string) (ok bool, err error) {
 	var count int64
-	err = u.db.Model(&model.Edge{}).
-		Where("from = ? AND relation = ? AND to = ?", userID, permissionType, objectID).
-		Count(&count).Error
+	err = u.db.Raw(
+		`
+			WITH RECURSIVE RoleHierarchy AS (
+				SELECT
+						From AS userID,
+						To AS roleID
+				FROM
+						Edge
+				WHERE
+						Relation = 'BelongsTo' AND From = ? 
+				UNION ALL
+				SELECT
+						r.userID,
+						e.To AS roleID
+				FROM
+						RoleHierarchy r
+				JOIN
+						Edge e
+				ON
+						r.roleID = e.From AND e.Relation = 'LeaderOf'
+			)
+			SELECT
+					COUNT(*) > 0 AS has_permission
+			FROM
+					RoleHierarchy r
+			JOIN
+					Edge e
+			ON
+					r.roleID = e.From AND e.Relation = ? 
+			WHERE
+					e.To = ?;
+		`,
+	).
+		Scan(&count).Error
 	return count > 0, err
 }
