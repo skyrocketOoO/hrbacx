@@ -21,7 +21,8 @@ export function setup() {
   for (let l = 0; l < ROLE_LAYER; l++){
     let p = Math.pow(ROLE_CHILDREN, l)
     for (let r = cur; r < cur+p; r++){
-      for (let o = r * OBJECT_CHILDREN; o < (r+1) * ROLE_CHILDREN; o++){
+      for (let o = r * OBJECT_CHILDREN; o < (r+1) * OBJECT_CHILDREN; o++){
+        // console.log(o, r)
         AssignPermission(o, PERMISSION_TYPE, r);
       }
       if (l == ROLE_LAYER-1){
@@ -45,8 +46,7 @@ export function setup() {
 
 export default function (data) {
   const { targetObject } = data; 
-  // console.log(`Last role: ${lastRole}`);
-  // console.log(`Target object: ${targetObject}`);
+  console.log(`Target object: ${targetObject}`);
   CheckPermission(0, PERMISSION_TYPE,targetObject )
 }
 

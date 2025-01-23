@@ -14,7 +14,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"gorm.io/gorm/schema"
 )
 
 var initOnce sync.Once
@@ -31,16 +30,15 @@ func New() error {
 	initOnce.Do(func() {
 		log.Info().Msg("New db")
 		config := gorm.Config{
-			NamingStrategy: schema.NamingStrategy{
-				NoLowerCase: true,
-			},
+			// NamingStrategy: schema.NamingStrategy{
+			// 	NoLowerCase: true,
+			// },
 			Logger: logger.New(
 				&zerologWriter{},
 				logger.Config{
 					SlowThreshold:             time.Second,
 					LogLevel:                  logger.Warn,
 					IgnoreRecordNotFoundError: false,
-					ParameterizedQueries:      true,
 					Colorful:                  true,
 				},
 			),
