@@ -48,12 +48,12 @@ func New() error {
 		case "mysql":
 			log.Info().Msg("Connecting to MySQL")
 			dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=%s",
-				viper.GetString("db.user"),
-				viper.GetString("db.password"),
-				viper.GetString("db.host"),
-				viper.GetInt("db.port"),
-				viper.GetString("db.db"),
-				viper.GetString("db.timezone"),
+				"admin",
+				"admin",
+				"127.0.0.1",
+				3306,
+				"mydb",
+				"UTC",
 			)
 
 			global.DB, err = gorm.Open(mysql.Open(dsn), &config)

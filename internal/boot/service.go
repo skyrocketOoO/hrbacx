@@ -15,7 +15,7 @@ func NewService() error {
 		if err := nebulaservice.New(); err != nil {
 			return err
 		}
-	} else if global.Database == "postgres" {
+	} else {
 		if err := database.New(); err != nil {
 			return err
 		}

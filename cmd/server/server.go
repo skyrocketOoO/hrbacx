@@ -31,6 +31,8 @@ func RunServer(cmd *cobra.Command, args []string) {
 		uc = usecase.NewNebulaUsecase(nebulaservice.SessionPool)
 	} else if global.Database == "postgres" {
 		uc = usecase.NewPgUsecase(global.DB)
+	} else if global.Database == "mysql" {
+		uc = usecase.NewMysqlUsecase(global.DB)
 	}
 
 	restController := controller.NewHandler(uc)

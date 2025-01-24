@@ -4,7 +4,7 @@ run-postgres:
 run-mysql:
 	docker run -d \
 		--name mysql-container \
-		-p 5432:3306 \
+		-p 3306:3306 \
 		-e MYSQL_ROOT_PASSWORD=admin \
 		-e MYSQL_USER=admin \
 		-e MYSQL_PASSWORD=admin \
