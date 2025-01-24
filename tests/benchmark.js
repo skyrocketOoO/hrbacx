@@ -6,7 +6,7 @@ export const options = {
   setupTimeout: '600s',
 }
 
-const ROLE_CHILDREN = 5;
+const ROLE_CHILDREN = 6;
 const ROLE_LAYER = 6;
 const OBJECT_CHILDREN = 10;
 const PERMISSION_TYPE = "write";
@@ -14,6 +14,7 @@ const PERMISSION_TYPE = "write";
 const sourceUser =  0;
 
 export function setup() {
+  const start = Date.now();
   console.log('Setting up the test...');
 
   AssignRole(sourceUser, 0);
@@ -38,8 +39,9 @@ export function setup() {
 
   const lastRole = cur-1;
   const targetObject = lastRole * OBJECT_CHILDREN-1;
-  // console.log(cur-1);
 
+  const setupTime = Date.now() - start;
+  console.log(`Setup time: ${setupTime} ms`);
   sleep(5);
   return { targetObject };
 }
