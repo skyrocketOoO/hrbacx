@@ -50,52 +50,62 @@ func (u *PgUsecase) CheckPermission(userID, permissionType, objectID string) (
 	return result, nil
 
 	/*
+		CREATE EXTENSION IF NOT EXISTS hstore;
+
 		CREATE OR REPLACE FUNCTION check_permission(user_id TEXT, permission_type TEXT, object_id TEXT)
 		RETURNS BOOLEAN AS $$
 		DECLARE
-		    queue TEXT[] :=ARRAY[]::TEXT[];
-		    visited TEXT[] := '{}';
+		    queue TEXT[] := ARRAY[]::TEXT[];
+		    visited hstore := hstore('');  -- Use hstore to track visited nodes
 		    current TEXT;
 		BEGIN
-			queue := queue || ARRAY(
-			    SELECT to_v
-			    FROM "edges"
-			    WHERE from_v = user_id
-			      AND relation = 'belongs_to'
-			);
+		    -- Initialize queue with nodes from 'belongs_to' relation
+		    queue := queue || ARRAY(
+		        SELECT to_v
+		        FROM "edges"
+		        WHERE from_v = user_id
+		          AND relation = 'belongs_to'
+		    );
 
+		    -- BFS traversal
 		    WHILE array_length(queue, 1) > 0 LOOP
+		        -- Dequeue the first element
 		        current := queue[1];
 		        queue := queue[2:array_length(queue, 1)];
 
-		        IF current = ANY(visited) THEN
+		        -- Skip if already visited
+		        IF visited -> current IS NOT NULL THEN
 		            CONTINUE;
 		        END IF;
 
-		        visited := array_append(visited, current);
+		        -- Mark the node as visited
+		        visited := visited || hstore(current, 'visited');
 
+		        -- Check if the permission exists
 		        PERFORM 1
-				FROM "edges"
-				WHERE from_v = current
-				  AND relation = permission_type
-				  AND to_v = object_id;
+		        FROM "edges"
+		        WHERE from_v = current
+		          AND relation = permission_type
+		          AND to_v = object_id;
 
-				IF FOUND THEN
-				    RETURN TRUE;
-				END IF;
+		        IF FOUND THEN
+		            RETURN TRUE;
+		        END IF;
 
-				queue := queue || ARRAY(
-				    SELECT to_v
-				    FROM "edges"
-				    WHERE from_v = current
-				      AND relation = 'leader_of'
-				      AND NOT (to_v = ANY(visited))
-				);
+		        -- Enqueue neighbors (leader_of relation) if not visited
+		        queue := queue || ARRAY(
+		            SELECT to_v
+		            FROM "edges"
+		            WHERE from_v = current
+		              AND relation = 'leader_of'
+		              AND visited -> to_v IS NULL  -- Only enqueue if not visited
+		        );
 		    END LOOP;
 
 		    RETURN FALSE;
 		END;
 		$$ LANGUAGE plpgsql;
+
 	*/
 }
 
