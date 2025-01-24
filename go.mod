@@ -9,6 +9,7 @@ toolchain go1.23.5
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-playground/validator/v10 v10.23.0
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/rs/zerolog v1.33.0
 	github.com/skyrocketOoO/erx v0.3.1
 	github.com/spf13/cobra v1.8.1
@@ -22,7 +23,9 @@ require (
 require (
 	github.com/bytedance/sonic v1.12.7 // indirect
 	github.com/bytedance/sonic/loader v0.2.2 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/gin-contrib/sse v1.0.0 // indirect

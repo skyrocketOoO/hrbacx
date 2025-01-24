@@ -9,6 +9,7 @@ import (
 	"github.com/skyrocketOoO/hrbacx/internal/controller"
 	"github.com/skyrocketOoO/hrbacx/internal/global"
 	nebulaservice "github.com/skyrocketOoO/hrbacx/internal/service/exter/nebula"
+	redisservice "github.com/skyrocketOoO/hrbacx/internal/service/exter/redis"
 	"github.com/skyrocketOoO/hrbacx/internal/usecase"
 	"github.com/spf13/cobra"
 )
@@ -33,6 +34,8 @@ func RunServer(cmd *cobra.Command, args []string) {
 		uc = usecase.NewPgUsecase(global.DB)
 	} else if global.Database == "mysql" {
 		uc = usecase.NewMysqlUsecase(global.DB)
+	} else if global.Database == "redis" {
+		uc = usecase.NewRedisUsecase(redisservice.RDB)
 	}
 
 	restController := controller.NewHandler(uc)

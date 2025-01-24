@@ -11,6 +11,9 @@ run-mysql:
 		-e MYSQL_DATABASE=mydb \
 		mysql:9.1
 
+run-redis:
+	docker run --name redis -p 6379:6379 -d redis
+
 build-img:
 	docker build -t go-server-template .
 

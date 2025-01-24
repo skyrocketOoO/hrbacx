@@ -14,3 +14,7 @@ roleBase, layer, objBase, setupTime, checkTime, targetID, db
 3, 3, 10, 1282, 16, 119, mysql
 4, 4, 10, 8693, 117, 839, mysql
 5, 5, 10, 81089, 1048.69, 7799, mysql
+3, 3, 10, 167, 5.92, 119, redis
+4, 4, 10, 507, 39.44, 839, redis
+5, 5, 10, 5704, 364.92, 7799, redis
+6, 6, 10, 65034, 4298.56, 93299, redis

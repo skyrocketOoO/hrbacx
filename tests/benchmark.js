@@ -6,8 +6,8 @@ export const options = {
   setupTimeout: '600s',
 }
 
-const ROLE_CHILDREN = 5;
-const ROLE_LAYER = 5;
+const ROLE_CHILDREN = 6;
+const ROLE_LAYER = 6;
 const OBJECT_CHILDREN = 10;
 const PERMISSION_TYPE = "write";
 
