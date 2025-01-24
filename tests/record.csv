@@ -1,3 +1,7 @@
+cpu i5-12600k
+memory 32*2 2133
+disk samsung ssd 980 pro 1T
+
 roleBase, layer, objBase, setupTime, checkTime, targetID, db
 3, 3, 10, 686, 1.65, 119, pg
 4, 4, 10, 4386, 2.3, 839, pg
