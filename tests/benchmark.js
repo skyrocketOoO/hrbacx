@@ -7,7 +7,7 @@ export const options = {
 }
 
 const ROLE_CHILDREN = 5;
-const ROLE_LAYER = 4;
+const ROLE_LAYER = 6;
 const OBJECT_CHILDREN = 10;
 const PERMISSION_TYPE = "write";
 
@@ -40,7 +40,7 @@ export function setup() {
   const targetObject = lastRole * OBJECT_CHILDREN-1;
   // console.log(cur-1);
 
-  sleep(15);
+  sleep(5);
   return { targetObject };
 }
 

@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"fmt"
-
 	"github.com/skyrocketOoO/hrbacx/internal/global"
 	"github.com/skyrocketOoO/hrbacx/internal/model"
 	"gorm.io/gorm"
@@ -43,10 +41,10 @@ func (u *PgUsecase) AssignRole(userID, roleID string) error {
 func (u *PgUsecase) CheckPermission(userID, permissionType, objectID string) (
 	ok bool, err error,
 ) {
-	fmt.Println("CheckPermission", userID, permissionType, objectID)
+	// fmt.Println("CheckPermission", userID, permissionType, objectID)
 	var result bool
 	query := `SELECT check_permission($1, $2, $3)`
-	if err := u.db.Raw(query, userID, permissionType, objectID).Scan(&result).Error; err != nil {
+	if err := u.db.Raw(query, "user_"+userID, permissionType, "obj_"+objectID).Scan(&result).Error; err != nil {
 		return false, err
 	}
 	return result, nil
@@ -55,37 +53,44 @@ func (u *PgUsecase) CheckPermission(userID, permissionType, objectID string) (
 		CREATE OR REPLACE FUNCTION check_permission(user_id TEXT, permission_type TEXT, object_id TEXT)
 		RETURNS BOOLEAN AS $$
 		DECLARE
-		    queue TEXT[];            -- Queue for BFS traversal
-		    current TEXT;            -- Current node being processed
-		    edge RECORD;             -- Holds edges fetched during traversal
-		    permission_found BOOLEAN := FALSE; -- Flag to indicate if permission is found
+		    queue TEXT[] :=ARRAY[]::TEXT[];
+		    visited TEXT[] := '{}';
+		    current TEXT;
 		BEGIN
-		    queue := ARRAY['user_' || user_id];
+			queue := queue || ARRAY(
+			    SELECT to_v
+			    FROM "edges"
+			    WHERE from_v = user_id
+			      AND relation = 'belongs_to'
+			);
 
 		    WHILE array_length(queue, 1) > 0 LOOP
 		        current := queue[1];
 		        queue := queue[2:array_length(queue, 1)];
 
-		        SELECT TRUE
-		        INTO permission_found
-		        FROM "edges"
-		        WHERE from_v = current
-		          AND relation = permission_type
-		          AND to_v = 'obj_' || object_id;
-
-		        IF permission_found THEN
-		            RETURN TRUE;
+		        IF current = ANY(visited) THEN
+		            CONTINUE;
 		        END IF;
 
-		        FOR edge IN
-		            SELECT to_v
-		            FROM "edges"
-		            WHERE from_v = current
-		              AND (relation = 'leader_of' or relation = 'belongs_to')
+		        visited := array_append(visited, current);
 
-		        LOOP
-		            queue := array_append(queue, edge.to_v);
-		        END LOOP;
+		        PERFORM 1
+				FROM "edges"
+				WHERE from_v = current
+				  AND relation = permission_type
+				  AND to_v = object_id;
+
+				IF FOUND THEN
+				    RETURN TRUE;
+				END IF;
+
+				queue := queue || ARRAY(
+				    SELECT to_v
+				    FROM "edges"
+				    WHERE from_v = current
+				      AND relation = 'leader_of'
+				      AND NOT (to_v = ANY(visited))
+				);
 		    END LOOP;
 
 		    RETURN FALSE;
