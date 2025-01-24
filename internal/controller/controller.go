@@ -36,6 +36,7 @@ func (h *Handler) AddLeader(c *gin.Context) {
 	}
 
 	if err := h.Usecase.AddLeader(req.LeaderID, req.RoleID); err != nil {
+		log.Error().Msg(err.Error())
 		c.Status(400)
 		return
 	}
@@ -55,6 +56,7 @@ func (h *Handler) AssignPermission(c *gin.Context) {
 	}
 
 	if err := h.Usecase.AssignPermission(req.ObjectID, req.PermissionType, req.RoleID); err != nil {
+		log.Error().Msg(err.Error())
 		c.Status(400)
 		return
 	}
@@ -73,6 +75,7 @@ func (h *Handler) AssignRole(c *gin.Context) {
 	}
 
 	if err := h.Usecase.AssignRole(req.UserID, req.RoleID); err != nil {
+		log.Error().Msg(err.Error())
 		c.Status(400)
 		return
 	}
@@ -93,6 +96,7 @@ func (h *Handler) CheckPermission(c *gin.Context) {
 
 	ok, err := h.Usecase.CheckPermission(req.UserID, req.PermissionType, req.ObjectID)
 	if err != nil {
+		log.Error().Msg(err.Error())
 		c.Status(500)
 		return
 	}

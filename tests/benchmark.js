@@ -37,10 +37,10 @@ export function setup() {
   }
 
   const lastRole = cur-1;
-  const targetObject = lastRole * OBJECT_CHILDREN;
+  const targetObject = lastRole * OBJECT_CHILDREN-1;
   // console.log(cur-1);
 
-  sleep(5);
+  sleep(15);
   return { targetObject };
 }
 
@@ -52,5 +52,5 @@ export default function (data) {
 }
 
 export function teardown(data) {
-  // ClearAll();
+  ClearAll();
 }

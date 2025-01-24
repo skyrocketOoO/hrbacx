@@ -8,6 +8,7 @@ import (
 	"github.com/skyrocketOoO/hrbacx/internal/boot"
 	"github.com/skyrocketOoO/hrbacx/internal/controller"
 	"github.com/skyrocketOoO/hrbacx/internal/global"
+	nebulaservice "github.com/skyrocketOoO/hrbacx/internal/service/exter/nebula"
 	"github.com/skyrocketOoO/hrbacx/internal/usecase"
 	"github.com/spf13/cobra"
 )
@@ -25,7 +26,13 @@ func RunServer(cmd *cobra.Command, args []string) {
 		log.Fatal().Msgf("Initialization failed: %v", err)
 	}
 
-	uc := usecase.NewPgUsecase(global.DB)
+	var uc controller.Usecase
+	if global.Database == "nebula" {
+		uc = usecase.NewNebulaUsecase(nebulaservice.SessionPool)
+	} else if global.Database == "postgres" {
+		uc = usecase.NewPgUsecase(global.DB)
+	}
+
 	restController := controller.NewHandler(uc)
 
 	router := gin.Default()
@@ -39,7 +46,7 @@ func RunServer(cmd *cobra.Command, args []string) {
 func init() {
 	Cmd.Flags().StringP("port", "p", "8080", "port")
 	Cmd.Flags().
-		StringVarP(&global.Database, `database`, "d", "postgres", `"postgres", "mysql"`)
+		StringVarP(&global.Database, `database`, "d", "postgres", `"postgres", "nebula"`)
 	Cmd.Flags().
 		StringVarP(&global.Env, `env`, "e", "dev", `"dev", "prod"`)
 
