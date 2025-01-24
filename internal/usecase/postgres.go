@@ -50,6 +50,48 @@ func (u *PgUsecase) CheckPermission(userID, permissionType, objectID string) (
 		return false, err
 	}
 	return result, nil
+
+	/*
+		CREATE OR REPLACE FUNCTION check_permission(user_id TEXT, permission_type TEXT, object_id TEXT)
+		RETURNS BOOLEAN AS $$
+		DECLARE
+		    queue TEXT[];            -- Queue for BFS traversal
+		    current TEXT;            -- Current node being processed
+		    edge RECORD;             -- Holds edges fetched during traversal
+		    permission_found BOOLEAN := FALSE; -- Flag to indicate if permission is found
+		BEGIN
+		    queue := ARRAY['user_' || user_id];
+
+		    WHILE array_length(queue, 1) > 0 LOOP
+		        current := queue[1];
+		        queue := queue[2:array_length(queue, 1)];
+
+		        SELECT TRUE
+		        INTO permission_found
+		        FROM "edges"
+		        WHERE from_v = current
+		          AND relation = permission_type
+		          AND to_v = 'obj_' || object_id;
+
+		        IF permission_found THEN
+		            RETURN TRUE;
+		        END IF;
+
+		        FOR edge IN
+		            SELECT to_v
+		            FROM "edges"
+		            WHERE from_v = current
+		              AND (relation = 'leader_of' or relation = 'belongs_to')
+
+		        LOOP
+		            queue := array_append(queue, edge.to_v);
+		        END LOOP;
+		    END LOOP;
+
+		    RETURN FALSE;
+		END;
+		$$ LANGUAGE plpgsql;
+	*/
 }
 
 func (u *PgUsecase) ClearAll() error {

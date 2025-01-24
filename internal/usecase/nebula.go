@@ -97,8 +97,6 @@ func (u *NebulaUsecase) CheckPermission(userID, permissionType, objectID string)
 		"obj_"+objectID,
 	)
 
-	fmt.Println(sql)
-
 	resp, err := u.SessionPool.Execute(sql)
 	if err != nil {
 		return false, fmt.Errorf("query execution failed: %v", err)
