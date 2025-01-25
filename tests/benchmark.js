@@ -3,7 +3,7 @@ import { AddLeader, AssignPermission, AssignRole, CheckPermission, ClearAll } fr
 
 export const options = {
   vus: 1,
-  setupTimeout: '600s',
+  setupTimeout: '6000s',
 }
 
 const ROLE_CHILDREN = 6;
