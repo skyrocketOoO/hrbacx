@@ -32,3 +32,6 @@ backup:
 
 gen-rest-doc:
 	swag init --output ./docs/openapi  -g main.go internal/controller/*.go
+
+run-test:
+	K6_WEB_DASHBOARD=true k6 run tests/benchmark.js
