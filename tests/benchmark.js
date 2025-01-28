@@ -69,3 +69,9 @@ export default function (data) {
 export function teardown(data) {
   ClearAll();
 }
+
+export function handleSummary(data) {
+  return {
+    'summary.json': JSON.stringify(data), //the default data object
+  };
+}
