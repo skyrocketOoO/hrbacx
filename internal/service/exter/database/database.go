@@ -69,6 +69,70 @@ func New() error {
 				viper.GetString("db.timezone"),
 			)
 			global.DB, err = gorm.Open(postgres.Open(connStr), &config)
+
+			if err == nil {
+				sql := `
+						CREATE EXTENSION IF NOT EXISTS hstore;
+
+		CREATE OR REPLACE FUNCTION check_permission(user_id TEXT, permission_type TEXT, object_id TEXT)
+		RETURNS BOOLEAN AS $$
+		DECLARE
+		    queue TEXT[] := ARRAY[]::TEXT[];
+		    visited hstore := hstore('');  -- Use hstore to track visited nodes
+		    current TEXT;
+		BEGIN
+		    -- Initialize queue with nodes from 'belongs_to' relation
+		    queue := queue || ARRAY(
+		        SELECT to_v
+		        FROM "edges"
+		        WHERE from_v = user_id
+		          AND relation = 'belongs_to'
+		    );
+
+		    -- BFS traversal
+		    WHILE array_length(queue, 1) > 0 LOOP
+		        -- Dequeue the first element
+		        current := queue[1];
+		        queue := queue[2:array_length(queue, 1)];
+
+		        -- Skip if already visited
+		        IF visited -> current IS NOT NULL THEN
+		            CONTINUE;
+		        END IF;
+
+		        -- Mark the node as visited
+		        visited := visited || hstore(current, 'visited');
+
+		        -- Check if the permission exists
+		        PERFORM 1
+		        FROM "edges"
+		        WHERE from_v = current
+		          AND relation = permission_type
+		          AND to_v = object_id;
+
+		        IF FOUND THEN
+		            RETURN TRUE;
+		        END IF;
+
+		        -- Enqueue neighbors (leader_of relation) if not visited
+		        queue := queue || ARRAY(
+		            SELECT to_v
+		            FROM "edges"
+		            WHERE from_v = current
+		              AND relation = 'leader_of'
+		              AND visited -> to_v IS NULL  -- Only enqueue if not visited
+		        );
+		    END LOOP;
+
+		    RETURN FALSE;
+		END;
+		$$ LANGUAGE plpgsql;
+				`
+				if global.DB.Raw(sql); err != nil {
+					err = erx.W(err, "Initialize database failed")
+					return
+				}
+			}
 		}
 
 		if err != nil {
@@ -84,7 +148,6 @@ func New() error {
 				return
 			}
 		}
-		return
 	})
 	return err
 }
